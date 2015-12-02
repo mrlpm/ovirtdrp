@@ -1,16 +1,24 @@
 from __future__ import print_function
-from functions_ovirt import connect, status_one_host
-
-
-USERNAME_MANAGER = "admin@internal"
-NAME_MANAGER = 'nrhevm.itmlabs.local'
-URL_MANAGER = 'https://' + NAME_MANAGER
-PASSWORD_MANAGER = 'S0p0rt32015.'
+from functions_ovirt import connect, status_one_host, read_config
 
 
 def main():
-    api = connect(rhevm_url=URL_MANAGER, rhevm_username=USERNAME_MANAGER, rhevm_password=PASSWORD_MANAGER)
-    print(status_one_host(api, 'nhost2.itmlabs.local'))
+    config = read_config(file_config='config.yml')
+    username = config['username']
+    password = config['password']
+    manager = config['manager']
+    url_manager = 'https://' + manager
+    hosts = config["Hosts"]
+
+    print(username)
+    print(password)
+    print(manager)
+    print(url_manager)
+    print(hosts["local"])
+    print(hosts["remote"])
+
+    api = connect(rhevm_url=url_manager, rhevm_username=username, rhevm_password=password)
+    print(status_one_host(api, hosts["remote"]["host1"]))
 
 
 if __name__ == '__main__':

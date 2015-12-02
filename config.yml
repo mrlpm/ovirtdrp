@@ -1,0 +1,10 @@
+# YAML
+username: admin@internal
+manager: nrhevm.itmlabs.local
+password: S0p0rt32015.
+Hosts:
+  local:
+    host1: nhost1.itmlabs.local
+    host2: nhost2.itmlabs.local
+  remote:
+    host1: nhost3.itmlabs.local

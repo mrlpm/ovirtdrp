@@ -1,4 +1,10 @@
 from ovirtsdk.api import API
+import yaml
+
+
+def read_config(file_config):
+    with open(file_config, 'r') as configuration:
+        return yaml.load(configuration)
 
 
 def connect(rhevm_url=None, rhevm_username=None, rhevm_password=None):
