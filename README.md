@@ -1,2 +1,2 @@
-# ovirtdrpqt
-DRP Manager for [oVirt](http://www.ovirt.org) written in python with Qt5
+# ovirtdrp
+DRP Scripts for [oVirt](http://www.ovirt.org)
