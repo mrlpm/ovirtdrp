@@ -17,7 +17,7 @@ def main():
     print(hosts["local"])
     print(hosts["remote"])
 
-    api = connect(rhevm_url=url_manager, rhevm_username=username, rhevm_password=password)
+    api = connect(manager_url=url_manager, manager_password=password)
     print(status_one_host(api, hosts["remote"]["host1"]))
 
 

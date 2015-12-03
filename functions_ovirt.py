@@ -7,8 +7,12 @@ def read_config(file_config):
         return yaml.load(configuration)
 
 
-def connect(rhevm_url=None, rhevm_username=None, rhevm_password=None):
-    api = API(url=rhevm_url, username=rhevm_username, password=rhevm_password, insecure="True")
+def connect(manager_url, manager_password, manager_username=None):
+    if manager_username is None:
+        manager_username = 'admin@internal'
+        api = API(url=manager_url, username=manager_username, password=manager_password, insecure="True")
+    else:
+        api = API(url=manager_url, username=manager_username, password=manager_password, insecure="True")
     return api
 
 
