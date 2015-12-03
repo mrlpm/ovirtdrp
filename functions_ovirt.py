@@ -7,12 +7,8 @@ def read_config(file_config):
         return yaml.load(configuration)
 
 
-def connect(manager_url, manager_password, manager_username=None):
-    if manager_username is None:
-        manager_username = 'admin@internal'
-        api = API(url=manager_url, username=manager_username, password=manager_password, insecure="True")
-    else:
-        api = API(url=manager_url, username=manager_username, password=manager_password, insecure="True")
+def connect(manager_url, manager_password, manager_username):
+    api = API(url=manager_url, username=manager_username, password=manager_password, insecure="True")
     return api
 
 

@@ -17,7 +17,7 @@ def main():
     print(hosts["local"])
     print(hosts["remote"])
 
-    api = connect(manager_url=url_manager, manager_password=password)
+    api = connect(manager_url=url_manager, manager_password=password, manager_username=username)
     print(status_one_host(api, hosts["remote"]["host1"]))
 
 
