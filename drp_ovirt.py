@@ -3,9 +3,10 @@ from __future__ import print_function
 from functions_ovirt import connect, status_one_host, read_config, clear, menu
 
 
-def status():
+def status(hosts, api):
     clear()
-    print("status")
+    for host in hosts:
+        print("Host {} status: {}", host, status_one_host(api, host))
     raw_input("Press Enter to continue...")
 
 
@@ -40,7 +41,7 @@ def main():
         if option == "3":
             break
         elif option == "1":
-            status()
+            status(hosts, api)
         elif option == "2":
             iniciar()
         else:
