@@ -1,5 +1,8 @@
 import platform
+import subprocess
+
 from ovirtsdk.api import API
+from ovirtsdk.xml import params
 import yaml
 import os
 
@@ -32,6 +35,24 @@ def clear():
 def menu():
     print("""
         1.- Hosts Status
-        2.- Iniciar
-        3.- Exit
+        2.- Exit
         """)
+
+
+def sub_menu():
+    print("""
+        1.- Iniciar
+        """)
+
+
+def do_fence(api, name):
+    api.hosts.get(name).fence(action=params.Action(fence_type='manual'))
+
+
+def ping(host_alive):
+    host_alive = host_alive
+    command = subprocess.call("ping -c 1 %s" % host_alive, shell=True, stdout=open('/dev/null', 'w'), stderr=subprocess.STDOUT)
+    if command == 0:
+        return 1
+    else:
+        return 0
