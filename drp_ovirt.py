@@ -1,18 +1,35 @@
 from __future__ import print_function
 
-from functions_ovirt import connect, status_one_host, read_config, clear, menu
+from functions_ovirt import connect, status_one_host, read_config, clear, menu, sub_menu
 
 
-def status(hosts, api):
+def status(api, hosts):
     clear()
-    for host in hosts:
-        print("Host {} status: {}", host, status_one_host(api, host))
-    raw_input("Press Enter to continue...")
+    local_no_hosts = len(hosts["local"])
+    remote_no_hosts = len(hosts["remote"])
+    count_non_responsive = 0
+    count_maintenance = 0
+    for locate in 'local', 'remote':
+        for host in hosts[locate]:
+            status_host = status_one_host(api, host)
+            if locate == 'local':
+                if status_host == 'non_responsive':
+                    count_non_responsive += 1
+            elif locate == 'remote':
+                if status_host == 'maintenance':
+                    count_maintenance += 1
+    if count_non_responsive == local_no_hosts:
+        if count_maintenance > 0:
+            return 1
+        else:
+            return 0
+    else:
+        return 0
 
 
-def iniciar():
+def start():
     clear()
-    print("iniciar")
+    print("Init")
     raw_input("Press Enter to continue...")
 
 
@@ -38,14 +55,17 @@ def main():
         menu()
         option = raw_input("Choice: ")
 
-        if option == "3":
+        if option == "2":
             break
         elif option == "1":
-            status(hosts, api)
-        elif option == "2":
-            iniciar()
+            if status(api=api, hosts=hosts):
+                sub_menu()
+            else:
+                print("Not Continue")
+            raw_input("Press Enter to continue...")
         else:
-            print("no existe la opcion")
+            print("{} is not a valid option".format(option))
+            raw_input("Press Enter to continue...")
 
 
 if __name__ == '__main__':
