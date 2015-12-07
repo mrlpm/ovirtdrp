@@ -6,7 +6,6 @@ from functions_ovirt import connect, status_one_host, read_config, clear, menu, 
 def status(api, hosts):
     clear()
     local_no_hosts = len(hosts["local"])
-    remote_no_hosts = len(hosts["remote"])
     count_non_responsive = 0
     count_maintenance = 0
     for locate in 'local', 'remote':
