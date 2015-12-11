@@ -46,7 +46,15 @@ def sub_menu():
 
 
 def do_fence(api, name):
-    api.hosts.get(name).fence(action=params.Action(fence_type='manual'))
+    try:
+        api.hosts.get(name).fence(action=params.Action(fence_type='manual'))
+        return 1
+    except ValueError:
+        return ValueError
+
+
+def do_maintenance(api, name):
+    pass
 
 
 def ping(host_alive):
