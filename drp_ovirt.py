@@ -1,11 +1,11 @@
 from __future__ import print_function
 
-from functions_ovirt import connect, status_one_host, read_config, clear, menu, sub_menu
+from functions_ovirt import connect, status_one_host, read_config, clear, menu, sub_menu, do_fence, do_maintenance
 
 
 def status(api, hosts):
     clear()
-    local_no_hosts = len(hosts["local"])
+    local_no_hosts = len(hosts['local'])
     count_non_responsive = 0
     count_maintenance = 0
     for locate in 'local', 'remote':
@@ -64,7 +64,15 @@ def main():
                     break
                 elif sub_option == "1":
                     print("iniciando DRP")
+                    for host in hosts['local']:
+                        print("Fencing host {}".format(host))
+                        if do_fence(api, host):
+                            print("Fencing host {} OK".format(host))
+                        print("Set Maintenance host {}".format(host))
+                        if do_maintenance(api, host):
+                            print("Maintenance host {} OK".format(host))
             else:
+                print("Site A OK")
                 print("Not Continue")
             raw_input("Press Enter to continue...")
         else:
