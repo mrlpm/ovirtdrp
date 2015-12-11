@@ -59,6 +59,11 @@ def main():
         elif option == "1":
             if status(api=api, hosts=hosts):
                 sub_menu()
+                sub_option = raw_input("Choice: ")
+                if sub_option == "2":
+                    break
+                elif sub_option == "1":
+                    print("iniciando DRP")
             else:
                 print("Not Continue")
             raw_input("Press Enter to continue...")
