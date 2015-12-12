@@ -54,7 +54,11 @@ def do_fence(api, name):
 
 
 def do_maintenance(api, name):
-    pass
+    try:
+        api.hosts.get(name).deactivate()
+        return 1
+    except ValueError:
+        return ValueError
 
 
 def ping(host_alive):
