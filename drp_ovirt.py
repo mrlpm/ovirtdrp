@@ -63,7 +63,7 @@ def main():
                 if sub_option == "2":
                     break
                 elif sub_option == "1":
-                    print("iniciando DRP")
+                    print("Initializing DRP")
                     for host in hosts['local']:
                         print("Fencing host {}".format(host))
                         if do_fence(api, host):
