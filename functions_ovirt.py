@@ -6,6 +6,9 @@ from ovirtsdk.xml import params
 import yaml
 import os
 
+from sqlalchemy import create_engine, MetaData, Table
+from sqlalchemy.orm import mapper, sessionmaker
+
 
 def read_config(file_config):
     with open(file_config, 'r') as configuration:
@@ -68,3 +71,16 @@ def ping(host_alive):
         return 1
     else:
         return 0
+
+
+def session_db(path, table_name, db_name, manager, password, class_name):
+    db_path = 'postgresql+psycopg2://' + db_name + ':' + password + '@' + manager + '/' + db_name
+    engine = create_engine(db_path, echo=False)
+
+    metadata = MetaData(engine)
+    use_table = Table(db_name, metadata, autoload=True)
+    mapper(class_name, use_table)
+
+    first_session = sessionmaker(bind=engine)
+    session = first_session()
+    return session
