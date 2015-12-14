@@ -1,3 +1,8 @@
-future
-ovirt-engine-sdk-python
-pyyaml
+future==0.15.2
+lxml==3.5.0
+npyscreen==4.10.5
+ovirt-engine-sdk-python==3.6.0.3
+psycopg2==2.6.1
+pycurl==7.19.5.3
+PyYAML==3.11
+SQLAlchemy==1.0.10
