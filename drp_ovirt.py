@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-from functions_ovirt import connect, status_one_host, read_config, clear, menu, sub_menu, do_fence, do_maintenance
+from functions_ovirt import *
 
 
 def status(api, hosts):
