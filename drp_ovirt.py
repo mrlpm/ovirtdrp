@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import time
+
 from functions_ovirt import *
 
 
@@ -33,7 +35,7 @@ def main():
                 elif sub_option == "1":
                     print("Initializing DRP")
                     for host in hosts['local']:
-                        if (status_one_host(api,host)) == 'non_responsive':
+                        if (status_one_host(api, host)) == 'non_responsive':
                             print("Fencing host {}".format(host))
                             if do_fence(api, host):
                                 print("Fencing host {} OK".format(host))
@@ -44,13 +46,13 @@ def main():
                                     print("Error trying to set Maintenance")
                         else:
                             print("Error trying to set Fencing")
+                        time.sleep(30)
                     print("Update Database")
                     modify_db(db_user=db_user, db_password=db_password, database=database, manager=manager)
                     change_state_to(api, host)
                     for host in hosts['remote']:
-                        change_state_to(api, host, stat='activate')
+                        change_state_to(api, host)
             else:
-                print("Site A OK")
                 print("Not Continue")
             raw_input("Press Enter to continue...")
         else:

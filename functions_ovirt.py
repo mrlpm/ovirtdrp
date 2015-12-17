@@ -58,6 +58,7 @@ def do_maintenance(api, name):
         api.hosts.get(name).deactivate()
         return 1
     except ValueError:
+        print(ValueError)
         return ValueError
 
 
@@ -77,6 +78,7 @@ def status(api, hosts):
     for locate in 'local', 'remote':
         for host in hosts[locate]:
             status_host = status_one_host(api, host)
+            print("Host {} state {}".format(host, status_host))
             if locate == 'local':
                 if status_host != 'up':
                     count_non_responsive += 1
@@ -92,13 +94,9 @@ def status(api, hosts):
         return 0
 
 
-def change_state_to(api, name, stat):
+def change_state_to(api, name):
     try:
-        if stat == 'deactivate':
-            api.hosts.get(name).deactivate()
-            return 1
-        elif stat == 'activate':
-            api.hosts.get(name).activate()
+        api.hosts.get(name).activate()
     except ValueError:
         return ValueError
 
