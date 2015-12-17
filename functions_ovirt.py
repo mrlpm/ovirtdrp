@@ -6,9 +6,6 @@ from ovirtsdk.xml import params
 import yaml
 import os
 
-from sqlalchemy import create_engine, MetaData, Table
-from sqlalchemy.orm import mapper, sessionmaker
-
 
 def read_config(file_config):
     with open(file_config, 'r') as configuration:
@@ -73,14 +70,34 @@ def ping(host_alive):
         return 0
 
 
-def session_db(path, table_name, db_name, manager, password, class_name):
-    db_path = 'postgresql+psycopg2://' + db_name + ':' + password + '@' + manager + '/' + db_name
-    engine = create_engine(db_path, echo=False)
+def status(api, hosts):
+    clear()
+    count_non_responsive = 0
+    count_maintenance = 0
+    for locate in 'local', 'remote':
+        for host in hosts[locate]:
+            status_host = status_one_host(api, host)
+            if locate == 'local':
+                if status_host != 'up':
+                    count_non_responsive += 1
+            elif locate == 'remote':
+                if status_host == 'maintenance':
+                    count_maintenance += 1
+    if count_non_responsive > 0:
+        if count_maintenance > 0:
+            return 1
+        else:
+            return 0
+    else:
+        return 0
 
-    metadata = MetaData(engine)
-    use_table = Table(db_name, metadata, autoload=True)
-    mapper(class_name, use_table)
 
-    first_session = sessionmaker(bind=engine)
-    session = first_session()
-    return session
+def change_state_to(api, name, stat):
+    try:
+        if stat == 'deactivate':
+            api.hosts.get(name).deactivate()
+            return 1
+        elif stat == 'activate':
+            api.hosts.get(name).activate()
+    except ValueError:
+        return ValueError
