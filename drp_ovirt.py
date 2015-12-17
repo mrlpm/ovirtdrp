@@ -3,49 +3,16 @@ from __future__ import print_function
 from functions_ovirt import *
 
 
-def status(api, hosts):
-    clear()
-    local_no_hosts = len(hosts['local'])
-    count_non_responsive = 0
-    count_maintenance = 0
-    for locate in 'local', 'remote':
-        for host in hosts[locate]:
-            status_host = status_one_host(api, host)
-            if locate == 'local':
-                if status_host == 'non_responsive':
-                    count_non_responsive += 1
-            elif locate == 'remote':
-                if status_host == 'maintenance':
-                    count_maintenance += 1
-    if count_non_responsive == local_no_hosts:
-        if count_maintenance > 0:
-            return 1
-        else:
-            return 0
-    else:
-        return 0
-
-
-def start():
-    clear()
-    print("Init")
-    raw_input("Press Enter to continue...")
-
-
 def main():
     config = read_config(file_config='config.yml')
     username = config['username']
     password = config['password']
     manager = config['manager']
+    database = config['database']
+    db_user = config['userDatabase']
+    db_password = config['passDatabase']
     url_manager = 'https://' + manager
     hosts = config["Hosts"]
-
-    '''
-    print(username)
-    print(password)
-    print(manager)
-    print(url_manager)
-    print(platform.system())'''
 
     api = connect(manager_url=url_manager, manager_password=password, manager_username=username)
 
@@ -65,12 +32,23 @@ def main():
                 elif sub_option == "1":
                     print("Initializing DRP")
                     for host in hosts['local']:
-                        print("Fencing host {}".format(host))
-                        if do_fence(api, host):
-                            print("Fencing host {} OK".format(host))
-                        print("Set Maintenance host {}".format(host))
-                        if do_maintenance(api, host):
-                            print("Maintenance host {} OK".format(host))
+                        if (status_one_host(api,host)) == 'non_responsive':
+                            print("Fencing host {}".format(host))
+                            if do_fence(api, host):
+                                print("Fencing host {} OK".format(host))
+                                print("Set Maintenance host {}".format(host))
+                                if do_maintenance(api, host):
+                                    print("Maintenance host {} OK".format(host))
+
+                                #if ping(manager):
+                                #    session = session_db(db_name=database, manager=manager,
+                                #                         user=db_user, password=db_password, class_name='Connections')
+                                #    res = session.query(Bookmarks).all()
+                                #    print(res)
+                                else:
+                                    print("Error trying to set Maintenance")
+                        else:
+                            print("Error trying to set Fencing")
             else:
                 print("Site A OK")
                 print("Not Continue")
