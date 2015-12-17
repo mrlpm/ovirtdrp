@@ -8,11 +8,12 @@ def main():
     username = config['username']
     password = config['password']
     manager = config['manager']
+    url_manager = 'https://' + manager
+    hosts = config["Hosts"]
+
     database = config['database']
     db_user = config['userDatabase']
     db_password = config['passDatabase']
-    url_manager = 'https://' + manager
-    hosts = config["Hosts"]
 
     api = connect(manager_url=url_manager, manager_password=password, manager_username=username)
 
@@ -39,16 +40,15 @@ def main():
                                 print("Set Maintenance host {}".format(host))
                                 if do_maintenance(api, host):
                                     print("Maintenance host {} OK".format(host))
-
-                                #if ping(manager):
-                                #    session = session_db(db_name=database, manager=manager,
-                                #                         user=db_user, password=db_password, class_name='Connections')
-                                #    res = session.query(Bookmarks).all()
-                                #    print(res)
                                 else:
                                     print("Error trying to set Maintenance")
                         else:
                             print("Error trying to set Fencing")
+                    print("Update Database")
+                    modify_db(db_user=db_user, db_password=db_password, database=database, manager=manager)
+                    change_state_to(api, host)
+                    for host in hosts['remote']:
+                        change_state_to(api, host, stat='activate')
             else:
                 print("Site A OK")
                 print("Not Continue")
