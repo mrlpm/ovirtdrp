@@ -1,6 +1,6 @@
 import platform
 import subprocess
-
+import sqlsoup
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
 import yaml
@@ -101,3 +101,11 @@ def change_state_to(api, name, stat):
             api.hosts.get(name).activate()
     except ValueError:
         return ValueError
+
+
+def modify_db(db_user, db_password, database, manager):
+    db_string = 'postgresql+psycopg2://' + db_user + ':' + db_password + '@' + manager + '/' + database
+    db = sqlsoup.SQLSoup(db_string)
+    db.execute("UPDATE storage_server_connections SET iqn='iqn.2015-12.local.itmlabs:lun01adrp' WHERE iqn='iqn.2015-12.local.itmlabs:lun01a' ")
+    db.execute("UPDATE storage_server_connections SET connection='192.168.113.254' WHERE connection='192.168.113.254'")
+    db.commit()
