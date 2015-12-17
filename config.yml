@@ -8,3 +8,19 @@ Hosts:
     - nhost2.itmlabs.local
   remote:
     - nhost3.itmlabs.local
+database: engine
+userDatabase: engine
+passDatabase: ZvPT0kdDB8qUaWtRnYcmz3
+table: storage_server_connections
+mpath:
+  iscsiportalA:
+    - 192.168.113.254
+    - 192.168.113.254
+  iscsiportalB:
+    - 192.168.113.254
+    - 192.168.113.254
+luns:
+  lunIDA:
+    - iqn.2015-12.local.itmlabs:lun01a
+  lunIDB:
+    - iqn.2015-12.local.itmlabs:lun01adrp
