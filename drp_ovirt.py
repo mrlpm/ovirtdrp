@@ -49,7 +49,6 @@ def main():
                         time.sleep(30)
                     print("Update Database")
                     modify_db(db_user=db_user, db_password=db_password, database=database, manager=manager)
-                    change_state_to(api, host)
                     for host in hosts['remote']:
                         change_state_to(api, host)
             else:
