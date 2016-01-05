@@ -17,7 +17,11 @@ def main():
     db_user = config['userDatabase']
     db_password = config['passDatabase']
 
-    api = connect(manager_url=url_manager, manager_password=password, manager_username=username)
+    if ping(manager):
+        api = connect(manager_url=url_manager, manager_password=password, manager_username=username)
+    else:
+        print("%s is unreacheable" % manager)
+        exit(1)
 
     while True:
         clear()
