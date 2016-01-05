@@ -1,14 +1,13 @@
 from __future__ import print_function
 
 import time
+from getpass import getpass
 
 from functions_ovirt import *
 
 
 def main():
     config = read_config(file_config='config.yml')
-    username = config['username']
-    password = config['password']
     manager = config['manager']
     url_manager = 'https://' + manager
     hosts = config["Hosts"]
@@ -16,6 +15,18 @@ def main():
     database = config['database']
     db_user = config['userDatabase']
     db_password = config['passDatabase']
+
+    print("Please enter username for %s" % manager)
+    username = raw_input("Username: ")
+    if not username:
+        print("Username must not be empty")
+        exit(-3)
+    else:
+        print("Please enter password for %s (will not be echoed)" % manager)
+        password = getpass()
+        if not password:
+            print("Password must not be empty")
+            exit(-3)
 
     if ping(manager):
         api = connect(manager_url=url_manager, manager_password=password, manager_username=username)
@@ -31,6 +42,7 @@ def main():
         if option == "2":
             break
         elif option == "1":
+            hosts['local'] = (get_local_hosts(api=api, remote=hosts['remote']))
             if status(api=api, hosts=hosts):
                 sub_menu()
                 sub_option = raw_input("Choice: ")
@@ -50,7 +62,7 @@ def main():
                                     print("Error trying to set Maintenance")
                         else:
                             print("Error trying to set Fencing")
-                        time.sleep(30)
+                        time.sleep(5)
                     print("Update Database")
                     modify_db(db_user=db_user, db_password=db_password, database=database, manager=manager)
                     for host in hosts['remote']:
