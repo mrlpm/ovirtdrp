@@ -64,7 +64,8 @@ def do_maintenance(api, name):
 
 def ping(host_alive):
     host_alive = host_alive
-    command = subprocess.call("ping -c 1 %s" % host_alive, shell=True, stdout=open('/dev/null', 'w'), stderr=subprocess.STDOUT)
+    command = subprocess.call("ping -c 1 %s" % host_alive, shell=True, stdout=open('/dev/null', 'w'),
+                              stderr=subprocess.STDOUT)
     if command == 0:
         return 1
     else:
