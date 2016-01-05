@@ -1,7 +1,5 @@
 # YAML
-username: admin@internal
 manager: nrhevm.itmlabs.local
-password: S0p0rt32015.
 Hosts:
   local:
     - nhost1.itmlabs.local
