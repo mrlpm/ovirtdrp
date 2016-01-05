@@ -3,6 +3,7 @@ import subprocess
 import sqlsoup
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
+from ovirtsdk.infrastructure.errors import RequestError
 import yaml
 import os
 
@@ -13,8 +14,12 @@ def read_config(file_config):
 
 
 def connect(manager_url, manager_password, manager_username):
-    api = API(url=manager_url, username=manager_username, password=manager_password, insecure="True")
-    return api
+    try:
+        api = API(url=manager_url, username=manager_username, password=manager_password, insecure="True")
+        return api
+    except RequestError as e:
+        print(e.reason)
+        exit(-1)
 
 
 def status_one_host(api, name):
@@ -41,7 +46,7 @@ def menu():
 
 def sub_menu():
     print("""
-        1.- Iniciar
+        1.- Start
         """)
 
 
@@ -79,7 +84,7 @@ def status(api, hosts):
     for locate in 'local', 'remote':
         for host in hosts[locate]:
             status_host = status_one_host(api, host)
-            print("Host {} state {}".format(host, status_host))
+            print("Host ({}) {} state {}".format(locate, host, status_host))
             if locate == 'local':
                 if status_host != 'up':
                     count_non_responsive += 1
@@ -88,11 +93,24 @@ def status(api, hosts):
                     count_maintenance += 1
     if count_non_responsive > 0:
         if count_maintenance > 0:
+            sad_face()
             return 1
         else:
-            return 0
+            print 'No remote hosts ready for operation'
+            print 'Power up and set maintenance mode for remote hosts'
+        sad_face()
+        exit(1)
+        return 1
     else:
-        return 0
+        if count_maintenance <= 0:
+            print 'Something is not right, remote host must be in Maintenance mode'
+            print 'Remote Site is not ready to start process - FIX and try again'
+            sad_face()
+            exit(2)
+        else:
+            happy_face()
+            print("Everything seems to be fine")
+            return 0
 
 
 def change_state_to(api, name):
@@ -106,5 +124,25 @@ def modify_db(db_user, db_password, database, manager):
     db_string = 'postgresql+psycopg2://' + db_user + ':' + db_password + '@' + manager + '/' + database
     db = sqlsoup.SQLSoup(db_string)
     db.execute("UPDATE storage_server_connections SET iqn='iqn.2015-12.local.itmlabs:lun01adrp' WHERE iqn='iqn.2015-12.local.itmlabs:lun01a' ")
-    db.execute("UPDATE storage_server_connections SET connection='192.168.113.254' WHERE connection='192.168.113.254'")
+    db.execute("UPDATE storage_server_connections SET connection='192.168.113.253' WHERE connection='192.168.113.254'")
     db.commit()
+
+
+def get_local_hosts(api, remote):
+    host_lists = api.hosts.list()
+    local_hosts = []
+    for h in host_lists:
+        if h.get_name() not in remote:
+            local_hosts.append(h.get_name())
+    return local_hosts
+
+
+def sad_face():
+    print('  _________\n /         \\\n |  X   X  |\n |    +    |\n | /\\/\\/\\/ |\n \\_________/');
+
+
+def happy_face():
+    print('  _________\n /         \\\n |  () ()  |\n |    -    |\n |  \\___/  |\n \\_________/');
+
+if __name__ == "__main__":
+    print("This file is intended to be used as a library of functions and it's not expected to be executed directly")
