@@ -1,9 +1,6 @@
 # YAML
 manager: nrhevm.itmlabs.local
 Hosts:
-  local:
-    - nhost1.itmlabs.local
-    - nhost2.itmlabs.local
   remote:
     - nhost3.itmlabs.local
 database: engine
