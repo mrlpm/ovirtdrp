@@ -47,6 +47,7 @@ def menu():
 def sub_menu():
     print("""
         1.- Start
+        2.- Exit
         """)
 
 
