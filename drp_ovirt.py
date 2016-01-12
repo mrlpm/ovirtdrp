@@ -15,6 +15,9 @@ def main():
     database = config['database']
     db_user = config['userDatabase']
     db_password = config['passDatabase']
+    luns = config['luns']
+    lun_local = luns['lunIDA']
+    lun_remote = luns['lunIDB']
 
     print("Please enter username for %s" % manager)
     username = raw_input("Username: ")

@@ -121,12 +121,18 @@ def change_state_to(api, name):
         return ValueError
 
 
-def modify_db(db_user, db_password, database, manager):
+def modify_db(db_user, db_password, database, manager, lunsA, lunsB):
     db_string = 'postgresql+psycopg2://' + db_user + ':' + db_password + '@' + manager + '/' + database
     db = sqlsoup.SQLSoup(db_string)
     db.execute("UPDATE storage_server_connections SET iqn='iqn.2015-12.local.itmlabs:lun01adrp' WHERE iqn='iqn.2015-12.local.itmlabs:lun01a' ")
     db.execute("UPDATE storage_server_connections SET connection='192.168.113.253' WHERE connection='192.168.113.254'")
     db.commit()
+
+
+def change_luns(lunsA, lunsB):
+    import itertools
+    for luna, lunb in itertools.izip(lunsA, lunsB):
+        print("%s change == %s " % (luna, lunb))
 
 
 def get_local_hosts(api, remote):
@@ -144,6 +150,7 @@ def sad_face():
 
 def happy_face():
     print('  _________\n /         \\\n |  () ()  |\n |    -    |\n |  \\___/  |\n \\_________/');
+
 
 if __name__ == "__main__":
     print("This file is intended to be used as a library of functions and it's not expected to be executed directly")
