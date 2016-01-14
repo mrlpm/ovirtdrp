@@ -3,6 +3,8 @@ import random
 import string
 import base64
 
+import sys
+
 punctuation = list(string.punctuation)
 alphabet = list(string.ascii_letters)
 chars = alphabet + punctuation
@@ -29,9 +31,20 @@ def decrypt(cipher_password):
 
 
 if __name__ == '__main__':
-    key = gen_key(chars)
-    password = raw_input("Password: ")
-    cipher_text = encrypt(key, password)
+    if len(sys.argv) > 1:
+        method = sys.argv[1]
+    else:
+        print("Usage: cipher.py [d<ecrypt> e<ncrypt>]")
+        print("Example: cipher.py d")
+        exit(-1)
 
-    print("encrypted key: %s " % cipher_text)
-    print("decypted: %s " % decrypt(cipher_text))
+    if method == 'd':
+        cipher_text = raw_input('Enter cipher text: ')
+        print("decypted: %s " % decrypt(cipher_text))
+    elif method == 'e':
+        key = gen_key(chars)
+        password = raw_input("Enter text: ")
+        cipher_text = encrypt(key, password)
+        print("encrypted key: %s " % cipher_text)
+    else:
+        print("Invalid Option")
