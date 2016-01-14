@@ -124,23 +124,27 @@ def do_activate_host(api, name):
 def modify_db(db_user, db_password, database, manager, lunsArray, portalsArray):
     db_string = 'postgresql+psycopg2://' + db_user + ':' + db_password + '@' + manager + '/' + database
     db = sqlsoup.SQLSoup(db_string)
-    change_luns(luns=lunsArray, portals=portalsArray, db=db)
+    change_iscsi(luns=lunsArray, portals=portalsArray, db=db)
     db.commit()
 
 
-def change_luns(luns, portals, db):
+def change_iscsi(luns, portals, db):
     try:
         import itertools
-        lun_local = luns['lunIDA']
-        lun_remote = luns['lunIDB']
+        iqn_local = luns['lunIDA']
+        iqn_remote = luns['lunIDB']
         portals_local = portals['iscsiportalA']
         portals_remote = portals['iscsiportalB']
-        for lunsa, lunsb in itertools.izip(lun_local, lun_remote):
-            lunx = db.storage_server_connections.filter_by(iqn=lunsa).one()
-            lunx.iqn = lunsb
-        for portala, portalb in itertools.izip(portals_local, portals_remote):
-            portalx = db.storage_server_connections.filter_by(connection=portala).one()
-            portalx.connection = portalb
+        for iqn_local_a, iqn_local_b in itertools.izip(iqn_local, iqn_remote):
+            iqns = db.storage_server_connections.filter_by(iqn=iqn_local_a).all()
+            for iqn in iqns:
+                iqn.iqn = iqn_local_b
+
+        for portal_a, portal_b in itertools.izip(portals_local, portals_remote):
+            portal_x = db.storage_server_connections.filter_by(connection=portal_a).all()
+            for one_portal in portal_x:
+                one_portal.connection = portal_b
+
         db.commit()
         return 1
     except ValueError:

@@ -62,6 +62,8 @@ def main():
                                     print("Maintenance host {} OK".format(host))
                                 else:
                                     print("Error trying to set Maintenance")
+                        elif (status_one_host(api, host)) == 'maintenance':
+                            pass
                         else:
                             print("Error trying to set Fencing")
                         time.sleep(5)
