@@ -34,7 +34,9 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         method = sys.argv[1]
     else:
-        print("Usage: cipher.py [d<ecrypt> e<ncrypt>]")
+        print("Usage: cipher.py [de]")
+        print("e encrypt plain text")
+        print("d decrypt cipher text")
         print("Example: cipher.py d")
         exit(-1)
 
