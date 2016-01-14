@@ -55,10 +55,10 @@ def main():
                     for host in hosts['local']:
                         if (status_one_host(api, host)) == 'non_responsive':
                             print("Fencing host {}".format(host))
-                            if do_fence(api, host):
+                            if do_fence_host(api, host):
                                 print("Fencing host {} OK".format(host))
                                 print("Set Maintenance host {}".format(host))
-                                if do_maintenance(api, host):
+                                if do_maintenance_host(api, host):
                                     print("Maintenance host {} OK".format(host))
                                 else:
                                     print("Error trying to set Maintenance")
@@ -69,7 +69,8 @@ def main():
                     modify_db(db_user=db_user, db_password=db_password,
                               database=database, manager=manager, lunsArray=iscsi_luns, portalsArray=iscsi_portals)
                     for host in hosts['remote']:
-                        change_state_to(api, host)
+                        do_activate_host(api, host)
+                    drp_finish(api)
             else:
                 print("Not Continue")
             raw_input("Press Enter to continue...")

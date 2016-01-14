@@ -51,7 +51,7 @@ def sub_menu():
         """)
 
 
-def do_fence(api, name):
+def do_fence_host(api, name):
     try:
         api.hosts.get(name).fence(action=params.Action(fence_type='manual'))
         return 1
@@ -59,7 +59,7 @@ def do_fence(api, name):
         return ValueError
 
 
-def do_maintenance(api, name):
+def do_maintenance_host(api, name):
     try:
         api.hosts.get(name).deactivate()
         return 1
@@ -114,7 +114,7 @@ def status(api, hosts):
             return 0
 
 
-def change_state_to(api, name):
+def do_activate_host(api, name):
     try:
         api.hosts.get(name).activate()
     except ValueError:
@@ -169,6 +169,28 @@ def decrypt(cipher_password):
     key_encode, pass_encode = not_b64.split('@')
     password_clear_text = base64.b64decode(pass_encode)
     return password_clear_text
+
+def spm_status(host):
+    if host.storage_manager.valueOf_ == 'true':
+            return 1
+    else:
+            return 0
+
+
+def drp_finish(api):
+    from progress.spinner import Spinner
+    spinner = Spinner("Waiting  ")
+    terminate = 0
+    while terminate != '1':
+        hosts = api.hosts.list()
+        for host in hosts:
+            if spm_status(host):
+                terminate = 1
+                print("\nHost %s is SPM" % host.name)
+        if terminate == 1:
+            break
+        spinner.next()
+    print("Finished...")
 
 if __name__ == "__main__":
     print("This file is intended to be used as a library of functions and it's not expected to be executed directly")
