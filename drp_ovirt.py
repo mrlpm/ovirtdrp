@@ -18,20 +18,19 @@ def main():
     iscsi_luns = config['luns']
     iscsi_portals = config['mpath']
 
-    print("Please enter username for %s" % manager)
-    username = raw_input("Username: ")
-    if not username:
-        print("Username must not be empty")
-        exit(-3)
-    else:
-        print("Please enter password for %s (will not be echoed)" % manager)
-        password = getpass()
-        if not password:
-            print("Password must not be empty")
-            exit(-3)
-
     if ping(manager):
         api = connect(manager_url=url_manager, manager_password=password, manager_username=username)
+        print("Please enter username for %s" % manager)
+        username = raw_input("Username: ")
+        if not username:
+            print("Username must not be empty")
+            exit(-3)
+        else:
+            print("Please enter password for %s (will not be echoed)" % manager)
+            password = getpass()
+            if not password:
+                print("Password must not be empty")
+            exit(-3)
     else:
         print("%s is unreacheable" % manager)
         exit(1)
