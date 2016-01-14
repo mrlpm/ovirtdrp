@@ -163,6 +163,12 @@ def sad_face():
 def happy_face():
     print('  _________\n /         \\\n |  () ()  |\n |    -    |\n |  \\___/  |\n \\_________/');
 
+def decrypt(cipher_password):
+    import base64
+    not_b64 = base64.b64decode(cipher_password)
+    key_encode, pass_encode = not_b64.split('@')
+    password_clear_text = base64.b64decode(pass_encode)
+    return password_clear_text
 
 if __name__ == "__main__":
     print("This file is intended to be used as a library of functions and it's not expected to be executed directly")

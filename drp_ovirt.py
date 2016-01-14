@@ -13,8 +13,8 @@ def main():
     hosts = config["Hosts"]
 
     database = config['database']
-    db_user = config['userDatabase']
-    db_password = config['passDatabase']
+    db_user = decrypt(config['userDatabase'])
+    db_password = decrypt(config['passDatabase'])
     iscsi_luns = config['luns']
     iscsi_portals = config['mpath']
 
