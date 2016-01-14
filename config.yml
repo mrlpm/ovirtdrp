@@ -10,14 +10,14 @@ table: storage_server_connections
 mpath:
   iscsiportalA:
     - 192.168.113.254
-    - 192.168.113.254
+    - 192.168.113.253
   iscsiportalB:
-    - 192.168.113.254
-    - 192.168.113.254
+    - 192.168.113.252
+    - 192.168.113.251
 luns:
-  lunIDB:
+  lunIDA:
     - iqn.2015-12.local.itmlabs:lun01a
     - iqn.2015-12.local.itmlabs:lun02a
-  lunIDA:
+  lunIDB:
     - iqn.2015-12.local.itmlabs:lun01adrp
     - iqn.2015-12.local.itmlabs:lun02adrp
