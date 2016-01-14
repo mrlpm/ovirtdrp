@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import platform
 import subprocess
 import sqlsoup
@@ -94,22 +96,18 @@ def status(api, hosts):
                     count_maintenance += 1
     if count_non_responsive > 0:
         if count_maintenance > 0:
-            sad_face()
             return 1
         else:
-            print 'No remote hosts ready for operation'
-            print 'Power up and set maintenance mode for remote hosts'
-        sad_face()
+            print('No remote hosts ready for operation')
+            print('Power up and set maintenance mode for remote hosts')
         exit(1)
         return 1
     else:
         if count_maintenance <= 0:
-            print 'Something is not right, remote host must be in Maintenance mode'
-            print 'Remote Site is not ready to start process - FIX and try again'
-            sad_face()
+            print('Something is not right, remote host must be in Maintenance mode')
+            print('Remote Site is not ready to start process - FIX and try again')
             exit(2)
         else:
-            happy_face()
             print("Everything seems to be fine")
             return 0
 
@@ -167,6 +165,7 @@ def sad_face():
 def happy_face():
     print('  _________\n /         \\\n |  () ()  |\n |    -    |\n |  \\___/  |\n \\_________/');
 
+
 def decrypt(cipher_password):
     import base64
     not_b64 = base64.b64decode(cipher_password)
@@ -174,11 +173,12 @@ def decrypt(cipher_password):
     password_clear_text = base64.b64decode(pass_encode)
     return password_clear_text
 
+
 def spm_status(host):
     if host.storage_manager.valueOf_ == 'true':
-            return 1
+        return 1
     else:
-            return 0
+        return 0
 
 
 def drp_finish(api):
@@ -195,6 +195,7 @@ def drp_finish(api):
             break
         spinner.next()
     print("Finished...")
+
 
 if __name__ == "__main__":
     print("This file is intended to be used as a library of functions and it's not expected to be executed directly")
