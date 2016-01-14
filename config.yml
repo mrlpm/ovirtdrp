@@ -15,7 +15,9 @@ mpath:
     - 192.168.113.254
     - 192.168.113.254
 luns:
-  lunIDA:
-    - iqn.2015-12.local.itmlabs:lun01a
   lunIDB:
+    - iqn.2015-12.local.itmlabs:lun01a
+    - iqn.2015-12.local.itmlabs:lun02a
+  lunIDA:
     - iqn.2015-12.local.itmlabs:lun01adrp
+    - iqn.2015-12.local.itmlabs:lun02adrp

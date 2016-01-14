@@ -15,9 +15,8 @@ def main():
     database = config['database']
     db_user = config['userDatabase']
     db_password = config['passDatabase']
-    luns = config['luns']
-    lun_local = luns['lunIDA']
-    lun_remote = luns['lunIDB']
+    iscsi_luns = config['luns']
+    iscsi_portals = config['mpath']
 
     print("Please enter username for %s" % manager)
     username = raw_input("Username: ")
@@ -67,7 +66,8 @@ def main():
                             print("Error trying to set Fencing")
                         time.sleep(5)
                     print("Update Database")
-                    modify_db(db_user=db_user, db_password=db_password, database=database, manager=manager)
+                    modify_db(db_user=db_user, db_password=db_password,
+                              database=database, manager=manager, lunsArray=iscsi_luns, portalsArray=iscsi_portals)
                     for host in hosts['remote']:
                         change_state_to(api, host)
             else:

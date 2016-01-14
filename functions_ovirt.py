@@ -121,18 +121,30 @@ def change_state_to(api, name):
         return ValueError
 
 
-def modify_db(db_user, db_password, database, manager, lunsA, lunsB):
+def modify_db(db_user, db_password, database, manager, lunsArray, portalsArray):
     db_string = 'postgresql+psycopg2://' + db_user + ':' + db_password + '@' + manager + '/' + database
     db = sqlsoup.SQLSoup(db_string)
-    db.execute("UPDATE storage_server_connections SET iqn='iqn.2015-12.local.itmlabs:lun01adrp' WHERE iqn='iqn.2015-12.local.itmlabs:lun01a' ")
-    db.execute("UPDATE storage_server_connections SET connection='192.168.113.253' WHERE connection='192.168.113.254'")
+    change_luns(luns=lunsArray, portals=portalsArray, db=db)
     db.commit()
 
 
-def change_luns(lunsA, lunsB):
-    import itertools
-    for luna, lunb in itertools.izip(lunsA, lunsB):
-        print("%s change == %s " % (luna, lunb))
+def change_luns(luns, portals, db):
+    try:
+        import itertools
+        lun_local = luns['lunIDA']
+        lun_remote = luns['lunIDB']
+        portals_local = portals['iscsiportalA']
+        portals_remote = portals['iscsiportalB']
+        for lunsa, lunsb in itertools.izip(lun_local, lun_remote):
+            lunx = db.storage_server_connections.filter_by(iqn=lunsa).one()
+            lunx.iqn = lunsb
+        for portala, portalb in itertools.izip(portals_local, portals_remote):
+            portalx = db.storage_server_connections.filter_by(connection=portala).one()
+            portalx.connection = portalb
+        db.commit()
+        return 1
+    except ValueError:
+        return ValueError
 
 
 def get_local_hosts(api, remote):
