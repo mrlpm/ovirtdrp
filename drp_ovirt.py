@@ -19,7 +19,6 @@ def main():
     iscsi_portals = config['mpath']
 
     if ping(manager):
-        api = connect(manager_url=url_manager, manager_password=password, manager_username=username)
         print("Please enter username for %s" % manager)
         username = raw_input("Username: ")
         if not username:
@@ -31,6 +30,7 @@ def main():
             if not password:
                 print("Password must not be empty")
             exit(-3)
+        api = connect(manager_url=url_manager, manager_password=password, manager_username=username)
     else:
         print("%s is unreacheable" % manager)
         exit(1)
