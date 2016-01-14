@@ -12,7 +12,7 @@ def main():
     url_manager = 'https://' + manager
     hosts = config["Hosts"]
 
-    database = config['database']
+    database = decrypt(config['database'])
     db_user = decrypt(config['userDatabase'])
     db_password = decrypt(config['passDatabase'])
     iscsi_luns = config['luns']
