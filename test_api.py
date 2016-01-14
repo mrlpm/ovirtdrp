@@ -2,11 +2,10 @@ from __future__ import print_function
 
 import sys
 import os
-
 from time import sleep
-
+from progress.spinner import Spinner
 from functions_ovirt import connect, read_config
-from tqdm import tqdm
+
 
 path = os.path.dirname(os.path.abspath(__file__))
 config = read_config(file_config=path + '/config.yml')
@@ -22,28 +21,30 @@ hosts = api.hosts.list()
 
 for data_center in data_centers:
     print("DataCenter Name: %s Status: %s" % (data_center.name, data_center.get_status().get_state()))
-    sys.stdout.flush()
+
 
 for cluster in clusters:
     print("Cluster Name: %s " % (cluster.name))
-    sys.stdout.flush()
-    #print("Cluster Name: %s Status: %s" % (cluster.name, cluster.get_status().get_state()))
 
-def spm_status(hosts):
+sys.stdout.flush()
+
+
+def spm_status(host):
+    if host.storage_manager.valueOf_ == 'true':
+            return 1
+    else:
+            return 0
+
+spinner = Spinner("Waiting")
+terminate = 0
+while terminate != '1':
+    print(".", end='')
+    hosts = api.hosts.list()
     for host in hosts:
-        response = list()
-        if host.storage_manager.valueOf_ == 'true':
-            response.append(host)
-            response.append(1)
-            return response
-        else:
-            response.append(host)
-            response.append(0)
-            return response
-while True:
-    spm = spm_status(hosts=hosts)[1]
-    spm_host = spm_status(hosts=hosts)[0]
-    if spm == 1:
+        if spm_status(host):
+            terminate = 1
+            print("\nHost %s is SPM" % host.name)
+    if terminate == 1:
         break
-print(spm)
-print(spm_host.name)
+    spinner.next()
+print("Finished...")
