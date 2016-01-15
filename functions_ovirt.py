@@ -8,6 +8,7 @@ from ovirtsdk.xml import params
 from ovirtsdk.infrastructure.errors import RequestError
 import yaml
 import os
+import sys
 
 
 def read_config(file_config):
@@ -21,7 +22,7 @@ def connect(manager_url, manager_password, manager_username):
         return api
     except RequestError as e:
         print(e.reason)
-        exit(-1)
+        sys.exit(-1)
 
 
 def status_one_host(api, name):
@@ -36,7 +37,7 @@ def clear():
         os.system('cls')
     else:
         print("Not Supported Operating System")
-        exit(-1)
+        sys.exit(-1)
 
 
 def menu():
@@ -100,13 +101,13 @@ def status(api, hosts):
         else:
             print('No remote hosts ready for operation')
             print('Power up and set maintenance mode for remote hosts')
-        exit(1)
+        sys.exit(1)
         return 1
     else:
         if count_maintenance <= 0:
             print('Something is not right, remote host must be in Maintenance mode')
             print('Remote Site is not ready to start process - FIX and try again')
-            exit(2)
+            sys.exit(2)
         else:
             print("Everything seems to be fine")
             return 0
@@ -119,7 +120,7 @@ def do_activate_host(api, name):
         return ValueError
 
 
-def modify_db(db_user, db_password, database, manager, lunsArray, portalsArray):
+def update_connections(db_user, db_password, database, manager, lunsArray, portalsArray):
     db_string = 'postgresql+psycopg2://' + db_user + ':' + db_password + '@' + manager + '/' + database
     db = sqlsoup.SQLSoup(db_string)
     change_iscsi(luns=lunsArray, portals=portalsArray, db=db)
@@ -180,21 +181,24 @@ def spm_status(host):
     else:
         return 0
 
-
 def drp_finish(api):
-    from progress.spinner import Spinner
-    spinner = Spinner("Waiting  ")
+    import sys
     terminate = 0
+    print("Waiting")
     while terminate != '1':
-        hosts = api.hosts.list()
-        for host in hosts:
-            if spm_status(host):
+        data_centers = api.datacenters.list()
+        count = 0
+        for data_center in data_centers:
+            if data_center.get_status().get_state() == 'up':
+                count += 1
+            if count == len(data_centers):
                 terminate = 1
-                print("\nHost %s is SPM" % host.name)
         if terminate == 1:
             break
-        spinner.next()
-    print("Finished...")
+        print("#", end='')
+        sys.stdout.flush()
+    api.disconnect()
+    print("\nFinished...")
 
 
 if __name__ == "__main__":

@@ -2,12 +2,13 @@ from __future__ import print_function
 
 import time
 from getpass import getpass
+import sys
 
 from functions_ovirt import *
 
 
 def main():
-    config = read_config(file_config='config.yml')
+    config = read_config(file_config='3T.yml')
     manager = config['manager']
     url_manager = 'https://' + manager
     hosts = config["Hosts"]
@@ -23,17 +24,17 @@ def main():
         username = raw_input("Username: ")
         if not username:
             print("Username must not be empty")
-            exit(-3)
+            sys.exit(-3)
         else:
             print("Please enter password for %s (will not be echoed)" % manager)
             password = getpass()
             if not password:
                 print("Password must not be empty")
-            exit(-3)
+                sys.exit(-3)
         api = connect(manager_url=url_manager, manager_password=password, manager_username=username)
     else:
         print("%s is unreacheable" % manager)
-        exit(1)
+        sys.exit(4)
 
     while True:
         clear()
@@ -66,18 +67,20 @@ def main():
                         else:
                             print("Error trying to set Fencing")
                         time.sleep(5)
-                    print("Update Database")
-                    modify_db(db_user=db_user, db_password=db_password,
-                              database=database, manager=manager, lunsArray=iscsi_luns, portalsArray=iscsi_portals)
+                    print("Update storage connections")
+                    update_connections(db_user=db_user, db_password=db_password,
+                                       database=database, manager=manager, lunsArray=iscsi_luns, portalsArray=iscsi_portals)
                     for host in hosts['remote']:
                         do_activate_host(api, host)
                     drp_finish(api)
             else:
                 print("Not Continue")
             raw_input("Press Enter to continue...")
+            sys.exit(1)
         else:
             print("{} is not a valid option".format(option))
             raw_input("Press Enter to continue...")
+            sys.exit(1)
 
 
 if __name__ == '__main__':
