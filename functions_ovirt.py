@@ -116,8 +116,10 @@ def status(api, hosts):
 def do_activate_host(api, name):
     try:
         api.hosts.get(name).activate()
-    except ValueError:
-        return ValueError
+        return 1
+    except RequestError as e:
+        print(e.reason)
+        return 0
 
 
 def update_connections(db_user, db_password, database, manager, lunsArray, portalsArray):
