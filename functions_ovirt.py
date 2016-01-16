@@ -189,9 +189,9 @@ def datacenter_status(api):
 
 def wait_datacenter(api):
     dc_up = list()
+    count = 0
     while True:
         data_centers = api.datacenters.list()
-        count = 0
         for data_center in data_centers:
             datacenter_state = data_center.get_status().get_state()
             datacenter_name = data_center.name
