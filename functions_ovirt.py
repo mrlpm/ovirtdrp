@@ -199,6 +199,7 @@ def wait_datacenter(api):
                 if datacenter_name not in dc_up:
                     dc_up.append(datacenter_name)
                     count += 1
+                    print(count)
                     print("Datacenter: %s status: %s" % (datacenter_name, datacenter_state))
         if count == len(data_centers):
             break
