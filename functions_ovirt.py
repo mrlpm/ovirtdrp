@@ -42,7 +42,7 @@ def clear():
 
 def menu():
     print("""
-        1.- Hosts Status
+        1.- Status
         2.- Exit
         """)
 
@@ -98,6 +98,7 @@ def status(api, hosts):
             elif locate == 'remote':
                 if status_host == 'maintenance':
                     remote_count_maintenance += 1
+    datacenter_status(api)
     if count_local_up > 0:
         print('All Host must be in Maintenance status, to start controlled DRP process')
         return 0
@@ -180,10 +181,13 @@ def spm_status(host):
     else:
         return 0
 
-def drp_finish(api):
-    import sys
-    terminate = 0
-    print("Waiting Datacenters state up")
+def datacenter_status(api):
+    data_centers = api.datacenters.list()
+    for data_center in data_centers:
+        datacenter_state = data_center.get_status().get_state()
+        print("Datacenter: %s status: %s" % (data_center.name, datacenter_state))
+
+def wait_datacenter(api):
     while terminate != '1':
         data_centers = api.datacenters.list()
         count = 0
@@ -196,6 +200,12 @@ def drp_finish(api):
                 terminate = 1
         if terminate == 1:
             break
+
+def drp_finish(api):
+    import sys
+    terminate = 0
+    print("Waiting Datacenters state up")
+    wait_datacenter(api)
     api.disconnect()
     print("\nFinished...")
     sys.exit(0)
