@@ -120,8 +120,11 @@ def do_activate_host(api, name):
 
 def update_connections(db_user, db_password, database, manager, lunsArray, portalsArray):
     db_string = 'postgresql+psycopg2://' + db_user + ':' + db_password + '@' + manager + '/' + database
+    print("Current Conections:")
+    verify_iscsi_changes(db=db)
     db = sqlsoup.SQLSoup(db_string)
     change_iscsi(luns=lunsArray, portals=portalsArray, db=db)
+    print("New Conections:")
     verify_iscsi_changes(db=db)
     db.commit()
     return 1
