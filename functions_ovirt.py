@@ -136,7 +136,7 @@ def change_iscsi(luns, portals, db):
             iqns = db.storage_server_connections.filter_by(iqn=iqn_local_a).all()
             for iqn in iqns:
                 iqn.iqn = iqn_local_b
-            print("Change iqn: %s for iqn: %s OK" % (iqn_local_a,iqn_local_b))
+            print("Change %s for %s OK" % (iqn_local_a,iqn_local_b))
 
         for portal_a, portal_b in itertools.izip(portals_local, portals_remote):
             portal_x = db.storage_server_connections.filter_by(connection=portal_a).all()
