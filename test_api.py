@@ -15,18 +15,16 @@ username = 'admin@internal'
 password = 'S0p0rt32015.'
 api = connect(url_manager,password,username)
 
-data_centers = api.datacenters.list()
+
 clusters = api.clusters.list()
 hosts = api.hosts.list()
 
-for data_center in data_centers:
-    print("DataCenter Name: %s Status: %s" % (data_center.name, data_center.get_status().get_state()))
+#for data_center in data_centers:
+#    print("DataCenter Name: %s Status: %s" % (data_center.name, data_center.get_status().get_state()))
 
 
 for cluster in clusters:
     print("Cluster Name: %s " % (cluster.name))
-
-sys.stdout.flush()
 
 
 def spm_status(host):
@@ -35,16 +33,20 @@ def spm_status(host):
     else:
             return 0
 
-spinner = Spinner("Waiting")
+spinner = Spinner("Waiting ")
 terminate = 0
 while terminate != '1':
-    print(".", end='')
-    hosts = api.hosts.list()
-    for host in hosts:
-        if spm_status(host):
+    data_centers = api.datacenters.list()
+    count = 0
+    for data_center in data_centers:
+        if data_center.get_status().get_state() == 'up':
+            count += 1
+        if count == len(data_centers):
             terminate = 1
-            print("\nHost %s is SPM" % host.name)
     if terminate == 1:
         break
     spinner.next()
-print("Finished...")
+
+sys.stdout.flush()
+api.disconnect()
+print("\nFinished...")

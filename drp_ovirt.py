@@ -1,3 +1,4 @@
+#!/bin/env python
 from __future__ import print_function
 
 import time
@@ -62,25 +63,26 @@ def main():
                                     print("Maintenance host {} OK".format(host))
                                 else:
                                     print("Error trying to set Maintenance")
+                            else:
+                                print("Error trying to set Fencing")
                         elif (status_one_host(api, host)) == 'maintenance':
-                            pass
-                        else:
-                            print("Error trying to set Fencing")
-                        time.sleep(5)
-                    print("Update storage connections")
-                    update_connections(db_user=db_user, db_password=db_password,
-                                       database=database, manager=manager, lunsArray=iscsi_luns, portalsArray=iscsi_portals)
+                            print("Maintenance host %s OK" % host)
+                    print("Updating storage connections")
+                    update_connections(db_user=db_user,
+                                       db_password=db_password, database=database,
+                                       manager=manager, lunsArray=iscsi_luns, portalsArray=iscsi_portals)
                     for host in hosts['remote']:
                         do_activate_host(api, host)
                     drp_finish(api)
             else:
                 print("Not Continue")
+                sys.exit(5)
             raw_input("Press Enter to continue...")
             sys.exit(1)
         else:
             print("{} is not a valid option".format(option))
             raw_input("Press Enter to continue...")
-            sys.exit(1)
+            sys.exit(6)
 
 
 if __name__ == '__main__':
