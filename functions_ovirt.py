@@ -189,14 +189,18 @@ def datacenter_status(api):
 
 def wait_datacenter(api):
     terminate = 0
+    dc_up = list()
     while terminate != '1':
         data_centers = api.datacenters.list()
         count = 0
         for data_center in data_centers:
             datacenter_state = data_center.get_status().get_state()
+            datacenter_name = data_center.name
             if datacenter_state == 'up':
-                count += 1
-                print("Datacenter: %s status: %s" % (data_center.name, datacenter_state))
+                if datacenter_name not in dc_up:
+                    dc_up.append(datacenter_name)
+                    count += 1
+                    print("Datacenter: %s status: %s" % (datacenter_name, datacenter_state))
             if count == len(data_centers):
                 terminate = 1
         if terminate == 1:
