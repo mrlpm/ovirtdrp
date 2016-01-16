@@ -122,6 +122,7 @@ def update_connections(db_user, db_password, database, manager, lunsArray, porta
     db_string = 'postgresql+psycopg2://' + db_user + ':' + db_password + '@' + manager + '/' + database
     db = sqlsoup.SQLSoup(db_string)
     change_iscsi(luns=lunsArray, portals=portalsArray, db=db)
+    verify_iscsi_changes(db=db)
     db.commit()
     return 1
 
@@ -148,6 +149,10 @@ def change_iscsi(luns, portals, db):
         return 1
     except ValueError:
         return ValueError
+
+def verify_iscsi_changes(db):
+    for iscsi in db.storage_server_connections.filter(db.storage_server_connections.iqn != None):
+        print("iqn: %s -- connection: %s " % (str(iscsi.iqn), str(iscsi.connection)))
 
 
 def get_local_hosts(api, remote):
