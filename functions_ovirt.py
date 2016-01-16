@@ -202,7 +202,6 @@ def wait_datacenter(api):
                     print("Datacenter: %s status: %s" % (datacenter_name, datacenter_state))
         if count == len(data_centers):
             break
-            return 0
 
 def drp_finish(api):
     import sys
