@@ -50,7 +50,8 @@ def main():
                 elif sub_option == "1":
                     print("Initializing DRP")
                     for host in hosts['local']:
-                        if (status_one_host(api, host)) == 'non_responsive':
+                        if ((status_one_host(api, host)) == 'non_responsive') \
+                                or ((status_one_host(api, host)) == 'down'):
                             print("Fencing host {}".format(host))
                             if do_fence_host(api, host):
                                 print("Fencing host {} OK".format(host))
