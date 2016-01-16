@@ -181,18 +181,20 @@ def spm_status(host):
 def drp_finish(api):
     import sys
     terminate = 0
-    print("Waiting")
+    print("Waiting Datacenters state up")
     while terminate != '1':
         data_centers = api.datacenters.list()
         count = 0
         for data_center in data_centers:
-            if data_center.get_status().get_state() == 'up':
+            datacenter_state = data_center.get_status().get_state()
+            if datacenter_state == 'up':
                 count += 1
+                print("Datacenter: %s status: %s" % (data_center.name, datacenter_state))
             if count == len(data_centers):
                 terminate = 1
         if terminate == 1:
             break
-        print("#", end='')
+        #print("#", end='')
         sys.stdout.flush()
     api.disconnect()
     print("\nFinished...")
