@@ -83,28 +83,32 @@ def ping(host_alive):
 
 def status(api, hosts):
     clear()
-    count_non_responsive = 0
-    count_maintenance = 0
+    count_local_not_up = 0
+    remote_count_maintenance = 0
+    count_local_up = 0
     for locate in 'local', 'remote':
         for host in hosts[locate]:
             status_host = status_one_host(api, host)
             print("Host ({}) {} state {}".format(locate, host, status_host))
             if locate == 'local':
                 if status_host != 'up':
-                    count_non_responsive += 1
+                    count_local_not_up += 1
+                elif status_host == 'up':
+                    count_local_up += 1
             elif locate == 'remote':
                 if status_host == 'maintenance':
-                    count_maintenance += 1
-    if count_non_responsive > 0:
-        if count_maintenance > 0:
+                    remote_count_maintenance += 1
+    if count_local_up > 0:
+        print('All Host must be in Maintenance status, to start controlled DRP process')
+        return 0
+    if count_local_not_up > 0:
+        if remote_count_maintenance > 0:
             return 1
         else:
             print('No remote hosts ready for operation')
             print('Power up and set maintenance mode for remote hosts')
-        sys.exit(1)
-        return 1
     else:
-        if count_maintenance <= 0:
+        if remote_count_maintenance <= 0:
             print('Something is not right, remote host must be in Maintenance mode')
             print('Remote Site is not ready to start process - FIX and try again')
             sys.exit(2)
