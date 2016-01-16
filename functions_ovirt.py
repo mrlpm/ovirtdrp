@@ -9,6 +9,7 @@ from ovirtsdk.infrastructure.errors import RequestError
 import yaml
 import os
 import sys
+from time import sleep
 
 
 def read_config(file_config):
@@ -123,7 +124,9 @@ def update_connections(db_user, db_password, database, manager, lunsArray, porta
     db = sqlsoup.SQLSoup(db_string)
     print("Current Conections:")
     verify_iscsi_changes(db=db)
+    sleep(5)
     change_iscsi(luns=lunsArray, portals=portalsArray, db=db)
+    sleep(5)
     print("New Conections:")
     verify_iscsi_changes(db=db)
     db.commit()
