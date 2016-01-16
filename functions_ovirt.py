@@ -89,7 +89,7 @@ def status(api, hosts):
     for locate in 'local', 'remote':
         for host in hosts[locate]:
             status_host = status_one_host(api, host)
-            print("Host ({}) {} state {}".format(locate, host, status_host))
+            print("Host (%s) %s state %s" % (locate, host, status_host))
             if locate == 'local':
                 if status_host != 'up':
                     count_local_not_up += 1
@@ -102,18 +102,11 @@ def status(api, hosts):
         print('All Host must be in Maintenance status, to start controlled DRP process')
         return 0
     if count_local_not_up > 0:
-        if remote_count_maintenance > 0:
+        if remote_count_maintenance == len(hosts['remote']):
             return 1
         else:
-            print('No remote hosts ready for operation')
+            print('Remote hosts not ready for operation')
             print('Power up and set maintenance mode for remote hosts')
-    else:
-        if remote_count_maintenance <= 0:
-            print('Something is not right, remote host must be in Maintenance mode')
-            print('Remote Site is not ready to start process - FIX and try again')
-            sys.exit(2)
-        else:
-            print("Everything seems to be fine")
             return 0
 
 
