@@ -59,17 +59,18 @@ def do_fence_host(api, name):
     try:
         api.hosts.get(name).fence(action=params.Action(fence_type='manual'))
         return 1
-    except ValueError:
-        return ValueError
+    except RequestError as e:
+        print(e.reason)
+        return 0
 
 
 def do_maintenance_host(api, name):
     try:
         api.hosts.get(name).deactivate()
         return 1
-    except ValueError:
-        print(ValueError)
-        return ValueError
+    except RequestError as e:
+        print(e.reason)
+        return 0
 
 
 def ping(host_alive):
