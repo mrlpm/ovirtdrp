@@ -69,7 +69,10 @@ def main():
                                        db_password=db_password, database=database,
                                        manager=manager, lunsArray=iscsi_luns, portalsArray=iscsi_portals)
                     for host in hosts['remote']:
-                        do_activate_host(api, host)
+                        if do_activate_host(api, host):
+                            print("Activating %s OK" % host)
+                        else:
+                            print("Failed to activate %s" % host)
                     drp_finish(api)
             else:
                 print("Not Continue")
