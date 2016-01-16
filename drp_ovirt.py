@@ -1,15 +1,11 @@
 #!/bin/env python
 from __future__ import print_function
-
-import time
 from getpass import getpass
-import sys
-
 from functions_ovirt import *
 
 
 def main():
-    config = read_config(file_config='3T.yml')
+    config = read_config(file_config='/etc/ovirtdrp/config.yml')
     manager = config['manager']
     url_manager = 'https://' + manager
     hosts = config["Hosts"]
@@ -77,12 +73,11 @@ def main():
             else:
                 print("Not Continue")
                 sys.exit(5)
-            raw_input("Press Enter to continue...")
+            raw_input("Press Enter to Exit...")
             sys.exit(1)
         else:
             print("{} is not a valid option".format(option))
             raw_input("Press Enter to continue...")
-            sys.exit(6)
 
 
 if __name__ == '__main__':
