@@ -188,6 +188,7 @@ def datacenter_status(api):
         print("Datacenter: %s status: %s" % (data_center.name, datacenter_state))
 
 def wait_datacenter(api):
+    terminate = 0
     while terminate != '1':
         data_centers = api.datacenters.list()
         count = 0
@@ -203,7 +204,6 @@ def wait_datacenter(api):
 
 def drp_finish(api):
     import sys
-    terminate = 0
     print("Waiting Datacenters state up")
     wait_datacenter(api)
     api.disconnect()
