@@ -122,6 +122,7 @@ def update_connections(db_user, db_password, database, manager, lunsArray, porta
     db = sqlsoup.SQLSoup(db_string)
     change_iscsi(luns=lunsArray, portals=portalsArray, db=db)
     db.commit()
+    return 1
 
 
 def change_iscsi(luns, portals, db):
@@ -135,12 +136,13 @@ def change_iscsi(luns, portals, db):
             iqns = db.storage_server_connections.filter_by(iqn=iqn_local_a).all()
             for iqn in iqns:
                 iqn.iqn = iqn_local_b
+            print("Change iqn: %s for iqn: %s OK" % (iqn_local_a,iqn_local_b))
 
         for portal_a, portal_b in itertools.izip(portals_local, portals_remote):
             portal_x = db.storage_server_connections.filter_by(connection=portal_a).all()
             for one_portal in portal_x:
                 one_portal.connection = portal_b
-
+            print("Change portal: %s for portal: %s OK" % (portal_a, portal_b))
         db.commit()
         return 1
     except ValueError:
@@ -194,10 +196,9 @@ def drp_finish(api):
                 terminate = 1
         if terminate == 1:
             break
-        #print("#", end='')
-        sys.stdout.flush()
     api.disconnect()
     print("\nFinished...")
+    sys.exit(0)
 
 
 if __name__ == "__main__":
